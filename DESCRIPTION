@@ -1,10 +1,10 @@
 Package: scge
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Single Cell Gene Expression
 Version: 0.1
 Date: 2015-06-03
-Author: Who wrote it
-Maintainer: Who to complain to <yourfault@somewhere.net>
+Author: Suchen Jin
+Maintainer: Suchen Jin <sjin@stats.ox.ac.uk>
 Description: More about what it does (maybe more than one line)
-License: What license is it under?
+License: GPL-3
 LazyData: TRUE
