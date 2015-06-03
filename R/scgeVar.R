@@ -1,8 +1,8 @@
 scgeVar <- function(data) {
-  geneMeans <- apply(data, 2, function(x) {mean(x[x != 0])})
-  geneVars <- apply(data, 2, function(x) {var(x[x != 0])})
-  linearModel <- lm(I(log(geneVars)) ~ I(log(geneMeans)))
-  object <- list(data = data, geneMeans = geneMeans, geneVars = geneVars,
+  geneMean <- apply(data, 2, function(x) {mean(x[x != 0])})
+  geneVar <- apply(data, 2, function(x) {var(x[x != 0])})
+  linearModel <- lm(I(log(geneVar)) ~ I(log(geneMean)))
+  object <- list(data = data, geneMean = geneMean, geneVar = geneVar,
                  a = coef(linearModel)[1], b = coef(linearModel)[2])
   class(object) <- "scgeVar"
   return(object)
@@ -13,10 +13,10 @@ coef.scgeVar <- function(object) {
 }
 
 plot.scgeVar <- function(object) {
-  plot(object$geneMeans, object$geneVars, log = "xy", xlab = "Gene Expression Mean",
+  plot(object$geneMean, object$geneVar, log = "xy", xlab = "Gene Expression Mean",
        ylab = "Gene Expression Variance", main = "Gene Mean-Var of Non-Zero Data")
   abline(0, 1, col = "red", untf = TRUE)
-  support <- exp(seq(log(min(object$geneMeans)), log(max(object$geneMeans)),
+  support <- exp(seq(log(min(object$geneMean)), log(max(object$geneMean)),
                      length.out = 100))
   lines(support, object$a*support ^ object$b, col = "blue")
 }
