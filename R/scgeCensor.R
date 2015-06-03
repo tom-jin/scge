@@ -1,8 +1,8 @@
 scgeCensor <- function(data) {
   geneMean <- apply(data, 2, function(x) {mean(x[x != 0])})
-  geneCensor <- apply(type$gene_expr, 2, function(x) {sum(x == 0)})
+  geneCensor <- apply(data, 2, function(x) {sum(x == 0)})
   #TODO: Fit sigmoid function.
-  object <- list(data = data, geneCensor = geneCensor, sigmoidScale = -1.4,
+  object <- list(data = data, geneMean = geneMean, geneCensor = geneCensor, sigmoidScale = -1.4,
                  position = 5, noiseScale = 0.5)
   class(object) <- "scgeCensor"
   return(object)
