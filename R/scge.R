@@ -20,6 +20,14 @@ scge <- function(data, meanObject = NULL, varObject = NULL, censorObject = NULL,
   return(object)
 }
 
+plot.scge <- function(object) {
+  plot(object$mean)
+  null <- readline("Hit <Return> to see next plot: ")
+  plot(object$var)
+  null <- readline("Hit <Return> to see next plot: ")
+  plot(object$censor)
+}
+
 print.scge <- function(object) {
   message("An scge object from package scge.")
 }
