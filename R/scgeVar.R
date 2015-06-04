@@ -29,7 +29,8 @@ print.scgeVar <- function(object) {
   message("An scgeVar object from package scge.")
 }
 
-simulate.scgeVar <- function(object) {
+simulate.scgeVar <- function(object, mean) {
+  return(exp(object$a) * mean ^ object$b)
   #TODO: Fit noise.
 }
 
