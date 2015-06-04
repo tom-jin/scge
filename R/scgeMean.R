@@ -11,7 +11,8 @@ coef.scgeMean <- function(object) {
 }
 
 plot.scgeMean <- function(object) {
-  hist(object$geneLogMean, freq = FALSE, main = "Log Mean Gene Expression Fit")
+  hist(object$geneLogMean, freq = FALSE, main = "Log Mean Gene Expression Fit",
+       xlab = "Log Mean Gene Expression")
   support <- seq(min(object$geneLogMean), max(object$geneLogMean), length.out = 100)
   lines(support, dnorm(support, object$mean, object$sd), col = "blue")
   invisible()

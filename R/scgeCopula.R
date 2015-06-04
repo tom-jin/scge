@@ -15,8 +15,8 @@ print.scgeCopula <- function(object) {
   message("An scgeCopulaobject from package scge.")
 }
 
-simulate.scgeCopula <- function(object, n) {
-  return(object$chol %*% matrix(rnorm(object$ncol * n), object$ncol, n))
+simulate.scgeCopula <- function(object, n = 1) {
+  return(pnorm(matrix(rnorm(object$ncol * n), n, object$ncol) %*% object$chol))
 }
 
 summary.scgeCopula <- function(object) {

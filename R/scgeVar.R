@@ -18,7 +18,7 @@ plot.scgeVar <- function(object) {
   abline(0, 1, col = "red", untf = TRUE)
   support <- exp(seq(log(min(object$geneMean)), log(max(object$geneMean)),
                      length.out = 100))
-  lines(support, object$a*support ^ object$b, col = "blue")
+  lines(support, exp(object$a)*support ^ object$b, col = "blue")
 }
 
 predict.scgeVar <- function(object, mean) {
