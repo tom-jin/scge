@@ -24,7 +24,7 @@ plot.scgeCensor <- function(object) {
   lines(support, pmax(0, sigmoid(support, object$sigmoidScale, object$position) - secant(support, object$noiseScale, object$position)), col = "green")
 }
 
-pedict.scgeCensor <- function(object, mean) {
+predict.scgeCensor <- function(object, mean) {
   return(sigmoid(mean, object$sigmoidScale, object$position))
 }
 

@@ -17,7 +17,7 @@ plot.scgeMean <- function(object) {
   invisible()
 }
 
-pedict.scgeMean <- function(object) {
+predict.scgeMean <- function(object) {
   return(exp(object$mean))
 }
 
@@ -25,7 +25,7 @@ print.scgeMean <- function(object) {
   message("An scgeMean object from package scge.")
 }
 
-simulate.scgeMean <- function(object, n) {
+simulate.scgeMean <- function(object, n = 1) {
   exp(rnorm(n, object$mean, object$sd))
 }
 

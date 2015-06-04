@@ -1,6 +1,6 @@
 scgeCopula <- function(data) {
   cor_mat <- cor(data)
-  fix_mat <- nearPD(cor_mat, corr = TRUE)$mat
+  fix_mat <- Matrix::nearPD(cor_mat, corr = TRUE)$mat
   cho_mat <- chol(fix_mat)
   object <- list(data = data, ncol = ncol(data), chol = cho_mat)
   class(object) <- "scgeCopula"

@@ -21,7 +21,7 @@ plot.scgeVar <- function(object) {
   lines(support, object$a*support ^ object$b, col = "blue")
 }
 
-pedict.scgeVar <- function(object, mean) {
+predict.scgeVar <- function(object, mean) {
   return(exp(object$a) * mean ^ object$b)
 }
 
