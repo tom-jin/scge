@@ -2,8 +2,11 @@ scgeVar <- function(data) {
   geneMean <- apply(data, 2, function(x) {mean(x[x != 0])})
   geneVar <- apply(data, 2, function(x) {var(x[x != 0])})
   linearModel <- lm(I(log(geneVar)) ~ I(log(geneMean)))
+  noiseSD <- sd(log(geneVar) - coef(linearModel)[2] * log(geneMean) -
+                  coef(linearModel)[1], na.rm = TRUE)
   object <- list(data = data, geneMean = geneMean, geneVar = geneVar,
-                 a = coef(linearModel)[1], b = coef(linearModel)[2])
+                 a = coef(linearModel)[1], b = coef(linearModel)[2],
+                 noiseSD = noiseSD)
   class(object) <- "scgeVar"
   return(object)
 }
@@ -19,6 +22,8 @@ plot.scgeVar <- function(object) {
   support <- exp(seq(log(min(object$geneMean)), log(max(object$geneMean)),
                      length.out = 100))
   lines(support, exp(object$a)*support ^ object$b, col = "blue")
+  lines(support, exp(object$a + 2*object$noiseSD)*support ^ object$b, col = "green")
+  lines(support, exp(object$a - 2*object$noiseSD)*support ^ object$b, col = "green")
 }
 
 predict.scgeVar <- function(object, mean) {
