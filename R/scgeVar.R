@@ -70,8 +70,7 @@ print.scgeVar <- function(x, ...) {
 
 #' @export
 simulate.scgeVar <- function(object, nsim = length(mean), seed = NULL, mean, ...) {
-  return(exp(object$a) * mean ^ object$b)
-  #TODO: Fit noise.
+  return(exp(object$a + rnorm(nsim, 0, object$noiseSD)) * mean ^ object$b)
 }
 
 #' @export
