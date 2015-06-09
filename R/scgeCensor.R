@@ -7,6 +7,11 @@
 #' @return \code{scgeCensor} returns an object of class "scgeCensor".
 #' @seealso \code{\link{scge}}, \code{\link{scgeMean}}, \code{\link{scgeVar}}
 #' and \code{\link{scgeCopula}}
+#' @examples
+#' obj <- scgeCensor()
+#' plot(obj)
+#' predict(obj, 42)
+#' simulate(obj, nsim = 10, mean = 42)
 #' @export
 scgeCensor <- function(data = NULL) {
   if (is.null(data)) {

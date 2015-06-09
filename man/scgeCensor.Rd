@@ -16,6 +16,12 @@ and columns represent genes.}
 \description{
 \code{scge} is used to fit gene censorship models.
 }
+\examples{
+obj <- scgeCensor()
+plot(obj)
+predict(obj, 42)
+simulate(obj, nsim = 10, mean = 42)
+}
 \seealso{
 \code{\link{scge}}, \code{\link{scgeMean}}, \code{\link{scgeVar}}
 and \code{\link{scgeCopula}}
