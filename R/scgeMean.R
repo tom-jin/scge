@@ -48,6 +48,7 @@ simulate.scgeMean <- function(object, nsim = 1, seed = NULL, ...) {
 
 #' @export
 summary.scgeMean <- function(object, ...) {
+  message("Gene Mean Expression Fit")
   message("Distribution: Log-normal")
   message("Location: ", object$mean)
   message("Scale: ", object$sd)

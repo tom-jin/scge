@@ -86,6 +86,7 @@ simulate.scgeCensor <- function(object, nsim = length(mean), seed = NULL, mean, 
 
 #' @export
 summary.scgeCensor <- function(object, ...) {
+  message("Gene Censorship Fit")
   message("Distribution: Sigmoid with normal noise restricted to the [0,1] interval")
   message("Sigmoid Position: ", object$position)
   message("Sigmoid Scale: ", object$scale)

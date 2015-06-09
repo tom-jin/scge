@@ -58,6 +58,7 @@ simulate.scgeVar <- function(object, nsim = length(mean), seed = NULL, mean, ...
 
 #' @export
 summary.scgeVar <- function(object, ...) {
+  message("Gene Mean-Variance Fit")
   message("Distribution: Log-log linear")
   message("Intercept: ", object$a)
   message("Slope: ", object$b)

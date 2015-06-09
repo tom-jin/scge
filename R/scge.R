@@ -88,7 +88,11 @@ simulate.scge <- function(object, nsim = 1, seed = NULL, ...) {
 
 #' @export
 summary.scge <- function(object, ...) {
-  message("An scge object from package scge.")
+  message("Gene Expression fit composed of:")
+  summary(object$mean)
+  summary(object$var)
+  summary(object$censor)
+  summary(object$copula)
 }
 
 param_p <- function(mean, var) {return(mean/var)}

@@ -34,5 +34,6 @@ simulate.scgeCopula <- function(object, nsim = 1, seed = NULL, ...) {
 
 #' @export
 summary.scgeCopula <- function(object, ...) {
+  message("Gene Correlation Fit")
   message("Distribution: Gaussian copula")
 }
