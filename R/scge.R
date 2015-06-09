@@ -28,6 +28,9 @@ NULL
 #' @export
 scge <- function(data = NULL, meanObject = NULL, varObject = NULL, censorObject = NULL,
                  copulaObject = NULL) {
+  if (!is.null(data)) {
+    data <- sanitise(data)
+  }
   if (is.null(meanObject)) {
     meanObject <- scgeMean(data)
   }
