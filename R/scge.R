@@ -49,25 +49,26 @@ scge <- function(data, meanObject = NULL, varObject = NULL, censorObject = NULL,
 }
 
 #' @export
-plot.scge <- function(object) {
-  plot(object$mean)
+plot.scge <- function(x, ...) {
+  plot(x$mean)
   null <- readline("Hit <Return> to see next plot: ")
-  plot(object$var)
+  plot(x$var)
   null <- readline("Hit <Return> to see next plot: ")
-  plot(object$censor)
+  plot(x$censor)
 }
 
 #' @export
-print.scge <- function(object) {
+print.scge <- function(x, ...) {
   message("An scge object from package scge.")
 }
 
 #' @export
-simulate.scge <- function(object) {
-  geneMean <- simulate(object$mean, object$nGenes)
-  geneVar  <- simulate(object$var, geneMean)
-  geneCensor <- simulate(object$censor, geneMean)
-  geneQuant <- simulate(object$copula, object$nGenes)
+#' @importFrom stats simulate
+simulate.scge <- function(object, nsim = 1, seed = NULL, ...) {
+  geneMean <- simulate.scgeMean(object$mean, object$nGenes)
+  geneVar  <- simulate.scgeVar(object$var, geneMean)
+  geneCensor <- simulate.scgeCensor(object$censor, geneMean)
+  geneQuant <- simulate.scgeCopula(object$copula, object$nGenes)
   geneP <- param_p(geneMean, geneVar)
   geneN <- param_n(geneMean, geneP)
 
@@ -86,7 +87,7 @@ simulate.scge <- function(object) {
 }
 
 #' @export
-summary.scge <- function(object) {
+summary.scge <- function(object, ...) {
   message("An scge object from package scge.")
 }
 

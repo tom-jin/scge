@@ -18,21 +18,21 @@ scgeCopula <- function(data) {
 }
 
 #' @export
-coef.scgeCopula <- function(object) {
+coef.scgeCopula <- function(object, ...) {
   return(object$chol)
 }
 
 #' @export
-print.scgeCopula <- function(object) {
+print.scgeCopula <- function(x, ...) {
   message("An scgeCopulaobject from package scge.")
 }
 
 #' @export
-simulate.scgeCopula <- function(object, n = 1) {
-  return(pnorm(matrix(rnorm(object$ncol * n), n, object$ncol) %*% object$chol))
+simulate.scgeCopula <- function(object, nsim = 1, seed = NULL, ...) {
+  return(pnorm(matrix(rnorm(object$ncol * nsim), nsim, object$ncol) %*% object$chol))
 }
 
 #' @export
-summary.scgeCopula <- function(object) {
+summary.scgeCopula <- function(object, ...) {
   message("Distribution: Gaussian copula")
 }

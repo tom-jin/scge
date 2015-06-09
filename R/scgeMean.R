@@ -17,36 +17,37 @@ scgeMean <- function(data) {
 }
 
 #' @export
-coef.scgeMean <- function(object) {
+coef.scgeMean <- function(object, ...) {
   return(c(mean = object$mean, sd = object$sd))
 }
 
 #' @export
-plot.scgeMean <- function(object) {
+plot.scgeMean <- function(x, ...) {
+  object <- x
   hist(object$geneLogMean, freq = FALSE, main = "Log Mean Gene Expression Fit",
-       xlab = "Log Mean Gene Expression")
+       xlab = "Log Mean Gene Expression", ...)
   support <- seq(min(object$geneLogMean), max(object$geneLogMean), length.out = 100)
   lines(support, dnorm(support, object$mean, object$sd), col = "blue")
   invisible()
 }
 
 #' @export
-predict.scgeMean <- function(object) {
+predict.scgeMean <- function(object, ...) {
   return(exp(object$mean))
 }
 
 #' @export
-print.scgeMean <- function(object) {
+print.scgeMean <- function(x, ...) {
   message("An scgeMean object from package scge.")
 }
 
 #' @export
-simulate.scgeMean <- function(object, n = 1) {
-  exp(rnorm(n, object$mean, object$sd))
+simulate.scgeMean <- function(object, nsim = 1, seed = NULL, ...) {
+  exp(rnorm(nsim, object$mean, object$sd))
 }
 
 #' @export
-summary.scgeMean <- function(object) {
+summary.scgeMean <- function(object, ...) {
   message("Distribution: Log-normal")
   message("Location: ", object$mean)
   message("Scale: ", object$sd)

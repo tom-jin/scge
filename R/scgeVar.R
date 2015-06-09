@@ -22,14 +22,16 @@ scgeVar <- function(data) {
 }
 
 #' @export
-coef.scgeVar <- function(object) {
+coef.scgeVar <- function(object, ...) {
   return(c(a = object$a, b = object$b))
 }
 
 #' @export
-plot.scgeVar <- function(object) {
-  plot(object$geneMean, object$geneVar, log = "xy", xlab = "Gene Expression Mean",
-       ylab = "Gene Expression Variance", main = "Gene Mean-Var of Non-Zero Data")
+plot.scgeVar <- function(x, ...) {
+  object <- x
+  plot(object$geneMean, object$geneVar, log = "xy",
+       xlab = "Gene Expression Mean", ylab = "Gene Expression Variance",
+       main = "Gene Mean-Var of Non-Zero Data", ...)
   abline(0, 1, col = "red", untf = TRUE)
   support <- exp(seq(log(min(object$geneMean)), log(max(object$geneMean)),
                      length.out = 100))
@@ -39,23 +41,23 @@ plot.scgeVar <- function(object) {
 }
 
 #' @export
-predict.scgeVar <- function(object, mean) {
+predict.scgeVar <- function(object, mean, ...) {
   return(exp(object$a) * mean ^ object$b)
 }
 
 #' @export
-print.scgeVar <- function(object) {
+print.scgeVar <- function(x, ...) {
   message("An scgeVar object from package scge.")
 }
 
 #' @export
-simulate.scgeVar <- function(object, mean) {
+simulate.scgeVar <- function(object, nsim = length(mean), seed = NULL, mean, ...) {
   return(exp(object$a) * mean ^ object$b)
   #TODO: Fit noise.
 }
 
 #' @export
-summary.scgeVar <- function(object) {
+summary.scgeVar <- function(object, ...) {
   message("Distribution: Log-log linear")
   message("Intercept: ", object$a)
   message("Slope: ", object$b)

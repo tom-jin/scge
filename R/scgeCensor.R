@@ -30,21 +30,22 @@ scgeCensor <- function(data = NULL) {
 }
 
 #' @export
-coef.scgeCensor <- function(object) {
+coef.scgeCensor <- function(object, ...) {
   return(c(position = object$position, scale = object$scale, sd = object$sd))
 }
 
 #' @export
-plot.scgeCensor <- function(object) {
+plot.scgeCensor <- function(x, ...) {
+  object <- x
   if (length(object$data) == 1) {
     plot(1, type = "n", log = "x",
          xlab = "Gene Expression Mean", ylab = "Gene Censorship",
-         main = "Sigmoid Fit", xlim = c(5, 50000), ylim = c(0, 1))
+         main = "Sigmoid Fit", xlim = c(5, 50000), ylim = c(0, 1), ...)
     support <- exp(seq(log(5), log(50000), length.out = 100))
   } else {
     plot(object$geneMean, object$geneCensor/nrow(object$data), log = "x",
          xlab = "Gene Expression Mean", ylab = "Gene Censorship",
-         main = "Sigmoid Fit", xlim = c(5, 50000), ylim = c(0, 1))
+         main = "Sigmoid Fit", xlim = c(5, 50000), ylim = c(0, 1), ...)
     support <- exp(seq(log(min(object$geneMean)), log(max(object$geneMean)),
                        length.out = 100))
   }
@@ -57,17 +58,17 @@ plot.scgeCensor <- function(object) {
 }
 
 #' @export
-predict.scgeCensor <- function(object, mean) {
+predict.scgeCensor <- function(object, mean, ...) {
   return(sigmoid(object$position + object$scale * log(mean)))
 }
 
 #' @export
-print.scgeCensor <- function(object) {
+print.scgeCensor <- function(x, ...) {
   message("An scgeCensor object from package scge.")
 }
 
 #' @export
-simulate.scgeCensor <- function(object, mean) {
+simulate.scgeCensor <- function(object, nsim = length(mean), seed = NULL, mean, ...) {
   samples <- sapply(mean, function(m) {
     sample <- rnorm(1, mean = sigmoid(object$position + object$scale * log(m)),
                     sd = object$sd)
@@ -79,7 +80,7 @@ simulate.scgeCensor <- function(object, mean) {
 }
 
 #' @export
-summary.scgeCensor <- function(object) {
+summary.scgeCensor <- function(object, ...) {
   message("Distribution: Sigmoid with normal noise restricted to the [0,1] interval")
   message("Sigmoid Position: ", object$position)
   message("Sigmoid Scale: ", object$scale)
