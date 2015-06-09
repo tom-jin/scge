@@ -5,8 +5,14 @@ Version: 0.1
 Date: 2015-06-03
 Author: Suchen Jin
 Maintainer: Suchen Jin <sjin@stats.ox.ac.uk>
-Description: More about what it does (maybe more than one line)
+Description: A package to simulate realistic gene expression data, initially for
+  single cell genomics but generalisable to other sources of gene expression
+  data. Models are fitted to reproduce the mean expression, mean-variance,
+  mean-censorship and correlation relationships within the data. Parameters from
+  an example fit are provided should data be unavailable.
 License: GPL-3
 LazyData: TRUE
+Depends:
+  R (>= 2.2.0), stats
 Imports:
   Matrix
