@@ -12,5 +12,6 @@ Description: A package to simulate realistic gene expression data, initially for
   an example fit are provided should data be unavailable.
 License: GPL-3
 LazyData: TRUE
-Imports:
+Imports: 
   Matrix
+Suggests: testthat
