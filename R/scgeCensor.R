@@ -20,10 +20,10 @@ scgeCensor <- function(data = NULL) {
   } else {
     geneMean <- apply(data, 2, function(x) {mean(x[x != 0])})
     geneCensor <- apply(data, 2, function(x) {sum(x == 0)})
-
-    d <- data.frame(mean = geneMean, censor = geneCensor/249,
-                    logit.censor = logit(geneCensor/249))[geneCensor != 0,]
     q <- quantile(geneMean, probs = c(0.5, 1))
+    rows <- nrow(data)
+    d <- data.frame(mean = geneMean, censor = geneCensor/rows,
+                    logit.censor = logit(geneCensor/rows))[geneCensor != 0,]
     f <- lm(logit.censor ~ I(log(mean)),d[d$mean > q[1] & d$mean < q[2], ])
 
     object <- list(data = data, geneMean = geneMean, geneCensor = geneCensor,
