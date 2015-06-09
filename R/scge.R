@@ -7,9 +7,25 @@
 #' from an example fit are provided should data be unavailable.
 #'
 #' @docType package
-#' @name scge-package
+#' @name scge
 NULL
 
+#' Fitting Gene Expression Models
+#'
+#' \code{scge} is used to fit gene expression models. This can be performed
+#' automatically by passing a matrix a counts or by passing components of the
+#' model.
+#'
+#' @param data A matrix of gene expression counts. Rows should represent cells
+#' and columns represent genes.
+#' @param meanObject The option object from the \code{scgeMean} function.
+#' @param varObject The option object from the \code{scgeVar} function.
+#' @param censorObject The option object from the \code{scgeCensor} function.
+#' @param copulaObject The option object from the \code{scgeCopula} function.
+#' @return \code{scge} returns an object of class "scge".
+#' @seealso \code{\link{scgeMean}}, \code{\link{scgeVar}},
+#' \code{\link{scgeCensor}} and \code{\link{scgeCopula}}
+#' @export
 scge <- function(data, meanObject = NULL, varObject = NULL, censorObject = NULL,
                  copulaObject = NULL) {
   if (is.null(meanObject)) {
@@ -32,6 +48,7 @@ scge <- function(data, meanObject = NULL, varObject = NULL, censorObject = NULL,
   return(object)
 }
 
+#' @export
 plot.scge <- function(object) {
   plot(object$mean)
   null <- readline("Hit <Return> to see next plot: ")
@@ -40,10 +57,12 @@ plot.scge <- function(object) {
   plot(object$censor)
 }
 
+#' @export
 print.scge <- function(object) {
   message("An scge object from package scge.")
 }
 
+#' @export
 simulate.scge <- function(object) {
   geneMean <- simulate(object$mean, object$nGenes)
   geneVar  <- simulate(object$var, geneMean)
@@ -66,6 +85,7 @@ simulate.scge <- function(object) {
   return(output)
 }
 
+#' @export
 summary.scge <- function(object) {
   message("An scge object from package scge.")
 }

@@ -1,3 +1,13 @@
+#' Fitting Gene Mean-Variance Models
+#'
+#' \code{scge} is used to fit gene mean-variance models.
+#'
+#' @param data A matrix of gene expression counts. Rows should represent cells
+#' and columns represent genes.
+#' @return \code{scgeVar} returns an object of class "scgeVar".
+#' @seealso \code{\link{scge}}, \code{\link{scgeMean}}, \code{\link{scgeCensor}}
+#' and \code{\link{scgeCopula}}
+#' @export
 scgeVar <- function(data) {
   geneMean <- apply(data, 2, function(x) {mean(x[x != 0])})
   geneVar <- apply(data, 2, function(x) {var(x[x != 0])})
@@ -11,10 +21,12 @@ scgeVar <- function(data) {
   return(object)
 }
 
+#' @export
 coef.scgeVar <- function(object) {
   return(c(a = object$a, b = object$b))
 }
 
+#' @export
 plot.scgeVar <- function(object) {
   plot(object$geneMean, object$geneVar, log = "xy", xlab = "Gene Expression Mean",
        ylab = "Gene Expression Variance", main = "Gene Mean-Var of Non-Zero Data")
@@ -26,19 +38,23 @@ plot.scgeVar <- function(object) {
   lines(support, exp(object$a - 2*object$noiseSD)*support ^ object$b, col = "green")
 }
 
+#' @export
 predict.scgeVar <- function(object, mean) {
   return(exp(object$a) * mean ^ object$b)
 }
 
+#' @export
 print.scgeVar <- function(object) {
   message("An scgeVar object from package scge.")
 }
 
+#' @export
 simulate.scgeVar <- function(object, mean) {
   return(exp(object$a) * mean ^ object$b)
   #TODO: Fit noise.
 }
 
+#' @export
 summary.scgeVar <- function(object) {
   message("Distribution: Log-log linear")
   message("Intercept: ", object$a)

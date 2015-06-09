@@ -1,5 +1,15 @@
+#' Fitting Gene Censorship Models
+#'
+#' \code{scge} is used to fit gene censorship models.
+#'
+#' @param data A matrix of gene expression counts. Rows should represent cells
+#' and columns represent genes.
+#' @return \code{scgeCensor} returns an object of class "scgeCensor".
+#' @seealso \code{\link{scge}}, \code{\link{scgeMean}}, \code{\link{scgeVar}}
+#' and \code{\link{scgeCopula}}
+#' @export
 scgeCensor <- function(data = NULL) {
-  if(is.null(data)) {
+  if (is.null(data)) {
     object <- list(data = NA, geneMean = NA, geneCensor = NA, scale = -1,
                    position = 6, sd = 0.2)
   } else {
@@ -19,10 +29,12 @@ scgeCensor <- function(data = NULL) {
   return(object)
 }
 
+#' @export
 coef.scgeCensor <- function(object) {
   return(c(position = object$position, scale = object$scale, sd = object$sd))
 }
 
+#' @export
 plot.scgeCensor <- function(object) {
   if (length(object$data) == 1) {
     plot(1, type = "n", log = "x",
@@ -44,14 +56,17 @@ plot.scgeCensor <- function(object) {
                                    log(support)) - 2*object$sd), col = "green")
 }
 
+#' @export
 predict.scgeCensor <- function(object, mean) {
   return(sigmoid(object$position + object$scale * log(mean)))
 }
 
+#' @export
 print.scgeCensor <- function(object) {
   message("An scgeCensor object from package scge.")
 }
 
+#' @export
 simulate.scgeCensor <- function(object, mean) {
   samples <- sapply(mean, function(m) {
     sample <- rnorm(1, mean = sigmoid(object$position + object$scale * log(m)),
@@ -63,6 +78,7 @@ simulate.scgeCensor <- function(object, mean) {
   return(samples)
 }
 
+#' @export
 summary.scgeCensor <- function(object) {
   message("Distribution: Sigmoid with normal noise restricted to the [0,1] interval")
   message("Sigmoid Position: ", object$position)
