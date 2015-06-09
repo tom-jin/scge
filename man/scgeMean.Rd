@@ -4,7 +4,7 @@
 \alias{scgeMean}
 \title{Fitting Gene Mean Expression Models}
 \usage{
-scgeMean(data)
+scgeMean(data = NULL)
 }
 \arguments{
 \item{data}{A matrix of gene expression counts. Rows should represent cells

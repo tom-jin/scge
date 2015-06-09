@@ -4,7 +4,7 @@
 \alias{scgeVar}
 \title{Fitting Gene Mean-Variance Models}
 \usage{
-scgeVar(data)
+scgeVar(data = NULL)
 }
 \arguments{
 \item{data}{A matrix of gene expression counts. Rows should represent cells

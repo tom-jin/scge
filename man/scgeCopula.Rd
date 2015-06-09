@@ -4,7 +4,7 @@
 \alias{scgeCopula}
 \title{Fitting Gene Correlation Models}
 \usage{
-scgeCopula(data)
+scgeCopula(data = NULL)
 }
 \arguments{
 \item{data}{A matrix of gene expression counts. Rows should represent cells

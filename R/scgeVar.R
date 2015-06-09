@@ -8,15 +8,20 @@
 #' @seealso \code{\link{scge}}, \code{\link{scgeMean}}, \code{\link{scgeCensor}}
 #' and \code{\link{scgeCopula}}
 #' @export
-scgeVar <- function(data) {
-  geneMean <- apply(data, 2, function(x) {mean(x[x != 0])})
-  geneVar <- apply(data, 2, function(x) {var(x[x != 0])})
-  linearModel <- lm(I(log(geneVar)) ~ I(log(geneMean)))
-  noiseSD <- sd(log(geneVar) - coef(linearModel)[2] * log(geneMean) -
-                  coef(linearModel)[1], na.rm = TRUE)
-  object <- list(data = data, geneMean = geneMean, geneVar = geneVar,
-                 a = coef(linearModel)[1], b = coef(linearModel)[2],
-                 noiseSD = noiseSD)
+scgeVar <- function(data = NULL) {
+  if (is.null(data)) {
+    object <- list(data = NA, geneMean = NA, geneVar = NA, a = 2.8, b = 1.7,
+                   noiseSD = 0.8)
+  } else {
+    geneMean <- apply(data, 2, function(x) {mean(x[x != 0])})
+    geneVar <- apply(data, 2, function(x) {var(x[x != 0])})
+    linearModel <- lm(I(log(geneVar)) ~ I(log(geneMean)))
+    noiseSD <- sd(log(geneVar) - coef(linearModel)[2] * log(geneMean) -
+                    coef(linearModel)[1], na.rm = TRUE)
+    object <- list(data = data, geneMean = geneMean, geneVar = geneVar,
+                   a = coef(linearModel)[1], b = coef(linearModel)[2],
+                   noiseSD = noiseSD)
+  }
   class(object) <- "scgeVar"
   return(object)
 }
@@ -29,15 +34,28 @@ coef.scgeVar <- function(object, ...) {
 #' @export
 plot.scgeVar <- function(x, ...) {
   object <- x
-  plot(object$geneMean, object$geneVar, log = "xy",
-       xlab = "Gene Expression Mean", ylab = "Gene Expression Variance",
-       main = "Gene Mean-Var of Non-Zero Data", ...)
-  abline(0, 1, col = "red", untf = TRUE)
-  support <- exp(seq(log(min(object$geneMean)), log(max(object$geneMean)),
-                     length.out = 100))
-  lines(support, exp(object$a)*support ^ object$b, col = "blue")
-  lines(support, exp(object$a + 2*object$noiseSD)*support ^ object$b, col = "green")
-  lines(support, exp(object$a - 2*object$noiseSD)*support ^ object$b, col = "green")
+  if (length(object$data) == 1) {
+    support <- exp(seq(log(5), log(50000),
+                       length.out = 100))
+    plot(support, exp(object$a)*support ^ object$b, type = "l", col = "blue",
+         log = "xy", xlim = c(5, 50000), ylim = c(1, 1e10),
+         xlab = "Gene Expression Mean", ylab = "Gene Expression Variance",
+         main = "Gene Mean-Var of Non-Zero Data")
+    abline(0, 1, col = "red", untf = TRUE)
+    lines(support, exp(object$a + 2*object$noiseSD)*support ^ object$b, col = "green")
+    lines(support, exp(object$a - 2*object$noiseSD)*support ^ object$b, col = "green")
+  } else {
+    plot(object$geneMean, object$geneVar, log = "xy", xlim = c(5, 50000),
+         ylim = c(1, 1e10), xlab = "Gene Expression Mean",
+         ylab = "Gene Expression Variance", main = "Gene Mean-Var of Non-Zero Data", ...)
+    abline(0, 1, col = "red", untf = TRUE)
+    support <- exp(seq(log(min(object$geneMean)), log(max(object$geneMean)),
+                       length.out = 100))
+    lines(support, exp(object$a)*support ^ object$b, col = "blue")
+    lines(support, exp(object$a + 2*object$noiseSD)*support ^ object$b, col = "green")
+    lines(support, exp(object$a - 2*object$noiseSD)*support ^ object$b, col = "green")
+  }
+  invisible()
 }
 
 #' @export
@@ -62,4 +80,7 @@ summary.scgeVar <- function(object, ...) {
   message("Distribution: Log-log linear")
   message("Intercept: ", object$a)
   message("Slope: ", object$b)
+  if (length(object$data) == 1) {
+    message("Using default parameters.")
+  }
 }

@@ -26,7 +26,7 @@ NULL
 #' @seealso \code{\link{scgeMean}}, \code{\link{scgeVar}},
 #' \code{\link{scgeCensor}} and \code{\link{scgeCopula}}
 #' @export
-scge <- function(data, meanObject = NULL, varObject = NULL, censorObject = NULL,
+scge <- function(data = NULL, meanObject = NULL, varObject = NULL, censorObject = NULL,
                  copulaObject = NULL) {
   if (is.null(meanObject)) {
     meanObject <- scgeMean(data)
@@ -40,10 +40,15 @@ scge <- function(data, meanObject = NULL, varObject = NULL, censorObject = NULL,
   if (is.null(copulaObject)) {
     copulaObject <- scgeCopula(data)
   }
-
-  object <- list(data = data, mean = meanObject, var = varObject,
-                 censor = censorObject, copula = copulaObject,
-                 nGenes = ncol(data))
+  if (is.null(data)) {
+    object <- list(data = data, mean = meanObject, var = varObject,
+                   censor = censorObject, copula = copulaObject,
+                   nGenes = 1000)
+  } else {
+    object <- list(data = data, mean = meanObject, var = varObject,
+                   censor = censorObject, copula = copulaObject,
+                   nGenes = ncol(data))
+  }
   class(object) <- "scge"
   return(object)
 }

@@ -6,8 +6,8 @@
 \alias{scge-package}
 \title{scge: A package for simulating single cell gene expression data.}
 \usage{
-scge(data, meanObject = NULL, varObject = NULL, censorObject = NULL,
-  copulaObject = NULL)
+scge(data = NULL, meanObject = NULL, varObject = NULL,
+  censorObject = NULL, copulaObject = NULL)
 }
 \arguments{
 \item{data}{A matrix of gene expression counts. Rows should represent cells

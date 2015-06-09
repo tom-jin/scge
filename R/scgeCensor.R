@@ -93,8 +93,6 @@ summary.scgeCensor <- function(object, ...) {
   message("Noise Scale: ", object$sd)
   if (length(object$data) == 1) {
     message("Using default parameters.")
-  } else {
-    message("Parameters fitted to ", nrow(object$data), " observations.")
   }
 }
 
