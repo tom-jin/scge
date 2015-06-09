@@ -1,3 +1,15 @@
+#' scge: A package for simulating single cell gene expression data.
+#'
+#' scge is a package to simulate realistic gene expression data, initially for
+#' single cell genomics but generalisable to other sources of gene expression
+#' data. Models are fitted to reproduce the mean expression, mean-variance,
+#' mean-censorship and correlation relationships within the data. Parameters
+#' from an example fit are provided should data be unavailable.
+#'
+#' @docType package
+#' @name scge-package
+NULL
+
 scge <- function(data, meanObject = NULL, varObject = NULL, censorObject = NULL,
                  copulaObject = NULL) {
   if (is.null(meanObject)) {
