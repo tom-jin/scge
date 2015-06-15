@@ -73,24 +73,52 @@ print.scge <- function(x, ...) {
 #' @export
 #' @importFrom stats simulate
 simulate.scge <- function(object, nsim = 1, seed = NULL, ...) {
-  geneMean <- simulate.scgeMean(object$mean, object$nGenes)
-  geneVar  <- simulate.scgeVar(object$var, geneMean)
-  geneCensor <- simulate.scgeCensor(object$censor, geneMean)
-  geneQuant <- simulate.scgeCopula(object$copula, object$nGenes)
+  if (!exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE))
+    runif(1)
+  if (is.null(seed))
+    RNGstate <- get(".Random.seed", envir = .GlobalEnv)
+  else {
+    R.seed <- get(".Random.seed", envir = .GlobalEnv)
+    set.seed(seed)
+    RNGstate <- structure(seed, kind = as.list(RNGkind()))
+    on.exit(assign(".Random.seed", R.seed, envir = .GlobalEnv))
+  }
+
+  if (is.na(object$mean$geneLogMean)) {
+    geneMean <- simulate(object$mean, 1000)
+  } else {
+    geneMean <- object$var$geneMean
+  }
+
+  if (is.na(object$var$geneVar)) {
+    geneVar <- simulate(object$var, mean = geneMean)
+  } else {
+    geneVar  <- object$var$geneVar
+  }
+
+  if (is.na(object$censor$geneCensor)) {
+    geneCensor <- simulate.scgeCensor(object$censor, nsim , mean = geneMean)
+  } else {
+    geneCensor <- object$censor$geneCensor
+  }
+
+  geneQuant <- simulate.scgeCopula(object$copula, nsim)
   geneP <- param_p(geneMean, geneVar)
   geneN <- param_n(geneMean, geneP)
 
-  output <- rep(NA, object$nGenes)
-  for (i in 1:object$nGenes) {
-    if (geneQuant[i] < geneCensor[i]) {
-      output[i] <- 0
-    } else {
-      adj_quantile <- pnbinom(0, geneN[i], geneP[i]) +
-        ((1 - pnbinom(0, geneN[i], geneP[i])) * (geneQuant[i] - geneCensor[i]) /
-           (1 - geneCensor[i]))
-      output[i] <- qnbinom(adj_quantile, geneN[i], geneP[i])
-    }
+  adj_quantile <- (geneQuant - geneCensor) / (1 - geneCensor)
+
+  if (nsim > 1) {
+    adj_quantile <- apply(adj_quantile, 2, pmax, 0)
+    adj_quantile <- apply(adj_quantile, 2, pmin, 1)
+  } else {
+    adj_quantile <- pmax(adj_quantile, 0)
+    adj_quantile <- pmin(adj_quantile, 1)
   }
+
+  output <- qnbinom(adj_quantile, geneN, geneP)
+  output <- output * (geneQuant > geneCensor)
+  attr(output, "seed") <- RNGstate
   return(output)
 }
 

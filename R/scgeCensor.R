@@ -20,10 +20,12 @@ scgeCensor <- function(data = NULL) {
   } else {
     geneMean <- apply(data, 2, function(x) {mean(x[x != 0])})
     geneCensor <- apply(data, 2, function(x) {sum(x == 0)})
-    q <- quantile(geneMean, probs = c(0.5, 1))
     rows <- nrow(data)
     d <- data.frame(mean = geneMean, censor = geneCensor/rows,
                     logit.censor = logit(geneCensor/rows))[geneCensor != 0,]
+    d <- d[is.finite(d$mean),]
+    d <- d[is.finite(d$logit.censor),]
+    q <- quantile(geneMean, probs = c(0.5, 1), na.rm = TRUE)
     f <- lm(logit.censor ~ I(log(mean)),d[d$mean > q[1] & d$mean < q[2], ])
 
     object <- list(data = data, geneMean = geneMean, geneCensor = geneCensor,
@@ -51,7 +53,7 @@ plot.scgeCensor <- function(x, ...) {
     plot(object$geneMean, object$geneCensor/nrow(object$data), log = "x",
          xlab = "Gene Expression Mean", ylab = "Gene Censorship",
          main = "Sigmoid Fit", xlim = c(5, 50000), ylim = c(0, 1), ...)
-    support <- exp(seq(log(min(object$geneMean)), log(max(object$geneMean)),
+    support <- exp(seq(log(5), log(max(object$geneMean)),
                        length.out = 100))
   }
   lines(support, sigmoid(object$position + object$scale * log(support)),
@@ -73,15 +75,32 @@ print.scgeCensor <- function(x, ...) {
 }
 
 #' @export
-simulate.scgeCensor <- function(object, nsim = length(mean), seed = NULL, mean, ...) {
-  samples <- sapply(mean, function(m) {
-    sample <- rnorm(1, mean = sigmoid(object$position + object$scale * log(m)),
-                    sd = object$sd)
-    sample <- pmax(0, sample)
-    sample <- pmin(1, sample)
-    sample
-  })
-  return(samples)
+simulate.scgeCensor <- function(object, nsim = 1, seed = NULL, mean, ...) {
+  if (missing("mean"))
+    stop("What mean gene expression do you want to simulate from?")
+  if (!exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE))
+    runif(1)
+  if (is.null(seed))
+    RNGstate <- get(".Random.seed", envir = .GlobalEnv)
+  else {
+    R.seed <- get(".Random.seed", envir = .GlobalEnv)
+    set.seed(seed)
+    RNGstate <- structure(seed, kind = as.list(RNGkind()))
+    on.exit(assign(".Random.seed", R.seed, envir = .GlobalEnv))
+  }
+
+  sample <- sapply(mean, function(mean, n) {rnorm(n, mean = sigmoid(object$position + object$scale * log(mean)), sd = object$sd)}, n = nsim)
+
+  if (nsim > 1) {
+    sample <- apply(sample, 2, pmax, 0)
+    sample <- apply(sample, 2, pmin, 1)
+  } else {
+    sample <- pmax(sample, 0)
+    sample <- pmin(sample, 1)
+  }
+
+  attr(sample, "seed") <- RNGstate
+  return(sample)
 }
 
 #' @export

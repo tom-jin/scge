@@ -43,7 +43,19 @@ print.scgeCopula <- function(x, ...) {
 
 #' @export
 simulate.scgeCopula <- function(object, nsim = 1, seed = NULL, ...) {
-  return(pnorm(object$chol %*% matrix(rnorm(object$ncol * nsim), object$ncol, nsim)))
+  if (!exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE))
+    runif(1)
+  if (is.null(seed))
+    RNGstate <- get(".Random.seed", envir = .GlobalEnv)
+  else {
+    R.seed <- get(".Random.seed", envir = .GlobalEnv)
+    set.seed(seed)
+    RNGstate <- structure(seed, kind = as.list(RNGkind()))
+    on.exit(assign(".Random.seed", R.seed, envir = .GlobalEnv))
+  }
+  val <- t(pnorm(object$chol %*% matrix(rnorm(object$ncol * nsim), object$ncol, nsim)))
+  attr(val, "seed") <- RNGstate
+  return(val)
 }
 
 #' @export

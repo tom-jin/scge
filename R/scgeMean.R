@@ -14,7 +14,8 @@ scgeMean <- function(data = NULL) {
   } else {
     geneLogMean <- apply(data, 2, function(x) {log(mean(x[x != 0]))})
     object <- list(data = data, geneLogMean = geneLogMean,
-                   mean = mean(geneLogMean), sd = sd(geneLogMean))
+                   mean = mean(geneLogMean, na.rm = TRUE),
+                   sd = sd(geneLogMean, na.rm = TRUE))
   }
 
   class(object) <- "scgeMean"
@@ -37,7 +38,8 @@ plot.scgeMean <- function(x, ...) {
   } else {
     hist(object$geneLogMean, freq = FALSE, main = "Log Mean Gene Expression Fit",
          xlab = "Log Mean Gene Expression", xlim = c(0, 10), ylim = c(0, 0.4), ...)
-    support <- seq(min(object$geneLogMean), max(object$geneLogMean), length.out = 100)
+    support <- seq(min(object$geneLogMean, na.rm = TRUE),
+                   max(object$geneLogMean, na.rm = TRUE), length.out = 100)
     lines(support, dnorm(support, object$mean, object$sd), col = "blue")
   }
 
@@ -56,7 +58,20 @@ print.scgeMean <- function(x, ...) {
 
 #' @export
 simulate.scgeMean <- function(object, nsim = 1, seed = NULL, ...) {
-  return(exp(rnorm(nsim, object$mean, object$sd)))
+  if (!exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE))
+    runif(1)
+  if (is.null(seed))
+    RNGstate <- get(".Random.seed", envir = .GlobalEnv)
+  else {
+    R.seed <- get(".Random.seed", envir = .GlobalEnv)
+    set.seed(seed)
+    RNGstate <- structure(seed, kind = as.list(RNGkind()))
+    on.exit(assign(".Random.seed", R.seed, envir = .GlobalEnv))
+  }
+
+  val <- exp(rnorm(nsim, object$mean, object$sd))
+  attr(val, "seed") <- RNGstate
+  return(val)
 }
 
 #' @export

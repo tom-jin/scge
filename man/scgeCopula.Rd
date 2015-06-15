@@ -16,6 +16,17 @@ and columns represent genes.}
 \description{
 \code{scge} is used to fit gene correlation models.
 }
+\references{
+Pollen, A., Nowakowski, T., Shuga, J., Wang, X., Leyrat, A.,
+Lui, J., Li, N., Szpankowski, L., Fowler, B., Chen, P., Ramalingam, N.,
+Sun, G., Thu, M., Norris, M., Lebofsky, R., Toppani, D., Kemp, D., Wong, M.,
+Clerkson, B., Jones, B., Wu, S., Knutsson, L., Alvarado, B., Wang, J.,
+Weaver, L., May, A., Jones, R., Unger, M., Kriegstein, A. and West,
+J. (2014). \emph{Low-coverage single-cell mRNA sequencing reveals cellular
+heterogeneity and activated signaling pathways in developing cerebral cortex.}
+Nat Biotechnol, [online] 32(10), pp.1053-1058. Available at:
+\url{http://www.nature.com/nbt/journal/v32/n10/abs/nbt.2967.html}
+}
 \seealso{
 \code{\link{scge}}, \code{\link{scgeMean}}, \code{\link{scgeVar}}
 and \code{\link{scgeCensor}}

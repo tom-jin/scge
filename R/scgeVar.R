@@ -15,7 +15,8 @@ scgeVar <- function(data = NULL) {
   } else {
     geneMean <- apply(data, 2, function(x) {mean(x[x != 0])})
     geneVar <- apply(data, 2, function(x) {var(x[x != 0])})
-    linearModel <- lm(I(log(geneVar)) ~ I(log(geneMean)))
+    d <- data.frame(logmean = log(geneMean), logvar = log(geneVar))
+    linearModel <- lm(logvar ~ logmean, d)
     noiseSD <- sd(log(geneVar) - coef(linearModel)[2] * log(geneMean) -
                     coef(linearModel)[1], na.rm = TRUE)
     object <- list(data = data, geneMean = geneMean, geneVar = geneVar,
@@ -35,26 +36,22 @@ coef.scgeVar <- function(object, ...) {
 plot.scgeVar <- function(x, ...) {
   object <- x
   if (length(object$data) == 1) {
-    support <- exp(seq(log(5), log(50000),
-                       length.out = 100))
+    support <- exp(seq(log(5), log(50000), length.out = 100))
     plot(support, exp(object$a)*support ^ object$b, type = "l", col = "blue",
          log = "xy", xlim = c(5, 50000), ylim = c(1, 1e10),
          xlab = "Gene Expression Mean", ylab = "Gene Expression Variance",
          main = "Gene Mean-Var of Non-Zero Data")
-    abline(0, 1, col = "red", untf = TRUE)
-    lines(support, exp(object$a + 2*object$noiseSD)*support ^ object$b, col = "green")
-    lines(support, exp(object$a - 2*object$noiseSD)*support ^ object$b, col = "green")
   } else {
+    support <- exp(seq(log(5), log(max(object$geneMean)),
+                       length.out = 100))
     plot(object$geneMean, object$geneVar, log = "xy", xlim = c(5, 50000),
          ylim = c(1, 1e10), xlab = "Gene Expression Mean",
          ylab = "Gene Expression Variance", main = "Gene Mean-Var of Non-Zero Data", ...)
-    abline(0, 1, col = "red", untf = TRUE)
-    support <- exp(seq(log(min(object$geneMean)), log(max(object$geneMean)),
-                       length.out = 100))
     lines(support, exp(object$a)*support ^ object$b, col = "blue")
-    lines(support, exp(object$a + 2*object$noiseSD)*support ^ object$b, col = "green")
-    lines(support, exp(object$a - 2*object$noiseSD)*support ^ object$b, col = "green")
   }
+  abline(0, 1, col = "red", untf = TRUE)
+  lines(support, exp(object$a + 2*object$noiseSD)*support ^ object$b, col = "green")
+  lines(support, pmax(1,exp(object$a - 2*object$noiseSD)*support ^ object$b), col = "green")
   invisible()
 }
 
@@ -69,8 +66,22 @@ print.scgeVar <- function(x, ...) {
 }
 
 #' @export
-simulate.scgeVar <- function(object, nsim = length(mean), seed = NULL, mean, ...) {
-  return(exp(object$a + rnorm(nsim, 0, object$noiseSD)) * mean ^ object$b)
+simulate.scgeVar <- function(object, nsim = 1, seed = NULL, mean, ...) {
+  if (!exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE))
+    runif(1)
+  if (is.null(seed))
+    RNGstate <- get(".Random.seed", envir = .GlobalEnv)
+  else {
+    R.seed <- get(".Random.seed", envir = .GlobalEnv)
+    set.seed(seed)
+    RNGstate <- structure(seed, kind = as.list(RNGkind()))
+    on.exit(assign(".Random.seed", R.seed, envir = .GlobalEnv))
+  }
+  val <- sapply(mean, function(mean, nsim) {
+    exp(object$a + rnorm(length(mean), 0, object$noiseSD)) * mean ^ object$b
+    }, nsim = nsim)
+  attr(val, "seed") <- RNGstate
+  return(val)
 }
 
 #' @export
