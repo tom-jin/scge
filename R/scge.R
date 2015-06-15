@@ -106,18 +106,10 @@ simulate.scge <- function(object, nsim = 1, seed = NULL, ...) {
   geneP <- param_p(geneMean, geneVar)
   geneN <- param_n(geneMean, geneP)
 
-  adj_quantile <- (geneQuant - geneCensor) / (1 - geneCensor)
 
-  if (nsim > 1) {
-    adj_quantile <- apply(adj_quantile, 2, pmax, 0)
-    adj_quantile <- apply(adj_quantile, 2, pmin, 1)
-  } else {
-    adj_quantile <- pmax(adj_quantile, 0)
-    adj_quantile <- pmin(adj_quantile, 1)
-  }
 
-  output <- qnbinom(adj_quantile, geneN, geneP)
-  output <- output * (geneQuant > geneCensor)
+  output <- qnbinom(geneQuant, geneN, geneP)
+  output <- output * (matrix(runif(nsim * object$nGenes), nsim, object$nGenes) > geneCensor)
   attr(output, "seed") <- RNGstate
   return(output)
 }
