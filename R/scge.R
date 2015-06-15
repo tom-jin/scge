@@ -103,10 +103,8 @@ simulate.scge <- function(object, nsim = 1, seed = NULL, ...) {
   }
 
   geneQuant <- simulate.scgeCopula(object$copula, nsim)
-  geneP <- param_p(geneMean, geneVar)
-  geneN <- param_n(geneMean, geneP)
-
-
+  geneP <- pmin(param_p(geneMean, geneVar), 1)
+  geneN <- pmax(param_n(geneMean, geneP), 0)
 
   output <- qnbinom(geneQuant, geneN, geneP)
   output <- output * (matrix(runif(nsim * object$nGenes), nsim, object$nGenes) > geneCensor)
