@@ -97,6 +97,9 @@ simulate.scge <- function(object, nsim = 1, seed = NULL, ...) {
   }
 
   if (is.na(object$censor$geneCensor)) {
+  defficient <- geneMean > geneVar
+  geneVar[defficient] <- geneMean[defficient]
+
     geneCensor <- simulate.scgeCensor(object$censor, nsim , mean = geneMean)
   } else {
     geneCensor <- object$censor$geneCensor
