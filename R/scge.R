@@ -84,22 +84,22 @@ simulate.scge <- function(object, nsim = 1, seed = NULL, ...) {
     on.exit(assign(".Random.seed", R.seed, envir = .GlobalEnv))
   }
 
-  if (is.na(object$mean$geneLogMean)) {
+  if (length(object$mean$geneLogMean) == 1 && is.na(object$mean$geneLogMean)) {
     geneMean <- simulate(object$mean, 1000)
   } else {
     geneMean <- object$var$geneMean
   }
 
-  if (is.na(object$var$geneVar)) {
+  if (length(object$var$geneVar) == 1 && is.na(object$var$geneVar)) {
     geneVar <- simulate(object$var, mean = geneMean)
   } else {
     geneVar  <- object$var$geneVar
   }
 
-  if (is.na(object$censor$geneCensor)) {
   defficient <- geneMean > geneVar
   geneVar[defficient] <- geneMean[defficient]
 
+  if (length(object$censor$geneCensor) == 1 && is.na(object$censor$geneCensor)) {
     geneCensor <- simulate.scgeCensor(object$censor, nsim , mean = geneMean)
   } else {
     geneCensor <- object$censor$geneCensor
